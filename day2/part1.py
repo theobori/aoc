@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 
-with open("../input.txt") as f:
+MAX_CUBES = {
+    "red": 12,
+    "green": 13,
+    "blue": 14 
+}
+
+with open("input.txt") as f:
     lines = list(
         filter(
             lambda x: len(x) > 0,
@@ -8,7 +14,7 @@ with open("../input.txt") as f:
         )
     )
 
-_sum = 0
+valid_games = []
 
 for line in lines:
     (game_id, game) = line.split(":")
@@ -18,7 +24,7 @@ for line in lines:
     subsets = game.split(";")
     subsets = list(map(lambda subset: subset.split(","), subsets))
     
-    few_colors = {}
+    is_valid = True
     
     for subset in subsets:
         subset = map(lambda x: x[1:].split(" "), subset)
@@ -27,16 +33,12 @@ for line in lines:
         for amount, color in subset:
             amount = int(amount)
 
-            if color in few_colors.keys():
-                few_colors[color].append(amount)
-            else:
-                few_colors[color] = [amount]
-    
-    power = 1
+            if amount > MAX_CUBES[color]:
+                is_valid = False
+                break
+        
+        
+    if is_valid == True:
+        valid_games.append(game_id)
 
-    for amounts in few_colors.values():
-        power *= max(amounts)
-    
-    _sum += power
-
-print(_sum)
+print(sum(valid_games))
