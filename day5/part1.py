@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env pypy
 
-with open("input.txt") as f:
+with open(0) as f:
     lines = list(
         filter(
             lambda x: len(x) > 0,
@@ -11,54 +11,39 @@ with open("input.txt") as f:
 seeds = lines.pop(0)
 _, seeds_values = seeds.split(": ")
 
-SEEDS = list(map(int, seeds_values.split(" ")))
+seeds = list(map(int, seeds_values.split(" ")))
 
-M = {}
+entries = []
 
 for line in lines:
-    line = line.split("\n")
+    line = filter(lambda x: len(x) > 0,line.split("\n")[1:])
+    line = tuple(map(lambda x: tuple(map(int, x.split(' '))), line))
 
-    header = line.pop(0)
-    header = header.split(" ")
-    header = header.pop(0)
+    entries.append(line)
 
-    destination_name, _, source_name = header.split("-")
+def _next_value(_next: int, entry: tuple) -> int:
+    for destination, source, length in entry:
+        if length > 0:
+            length -= 1
+
+        if length <= 0:
+            continue
+
+        if source <= _next <= source + length:
+            _next -= source - destination
+            break
     
-    entries = list(filter(lambda x: len(x) > 0, line))
-    
-    for entry in entries:
-        entry = list(map(int, entry.split(" ")))
-    
-        destination, source, length = entry
-        
-        key = (destination_name, source_name)
-        
-        entry = tuple(entry)
-        
-        if not key in M.keys():
-            M[key] = [entry]
-        else:
-            M[key] += [entry]
-        
+    return _next
+
 lowest_location = -1
 
-for seed in SEEDS:
+for seed in seeds:
     _next = seed
-    
-    for (destination_name, source_name), entries in M.items():
-        for destination, source, length in entries:
-            if length > 0:
-                length -= 1
 
-            if length <= 0:
-                continue
-            
-            if source <= _next <= source + length:
-                _next -= source - destination
-                break
-        
-        if source_name == "location":
-            if lowest_location == -1 or _next < lowest_location:
-                lowest_location = _next
-        
+    for entry in entries:
+        _next = _next_value(_next, entry)
+    
+    if lowest_location == -1 or _next < lowest_location:
+        lowest_location = _next
+    
 print(lowest_location)

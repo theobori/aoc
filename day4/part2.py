@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env pypy
 
-with open("input.txt") as f:
+with open(0) as f:
     lines = list(
         filter(
             lambda x: len(x) > 0,
@@ -29,6 +29,6 @@ for i, line in enumerate(lines):
     current_card_amount = _instances[i]
     
     for next_card in range(matching_numbers_amount):
-        _instances[i + next_card + 1] += (1 * current_card_amount)
+        _instances[i + next_card + 1] += current_card_amount
     
 print(sum(_instances))

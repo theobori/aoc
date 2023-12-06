@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env pypy
 
 SPELLED_DIGITS = (
     "one",
@@ -12,7 +12,7 @@ SPELLED_DIGITS = (
     "nine"
 )
 
-with open("input.txt") as f:
+with open(0) as f:
     lines = list(
         filter(
             lambda x: len(x) > 0,

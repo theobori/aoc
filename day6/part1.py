@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env pypy
 
-with open("input.txt") as f:
+with open(0) as f:
     lines = list(
         filter(
             lambda x: len(x) > 0,
