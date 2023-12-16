@@ -8,6 +8,8 @@ with open(0) as f:
         )
     )
 
+height, width = len(lines), len(lines[0])
+
 checks = (
     (-1, 0), (-1, -1), (0, -1), (-1, 1),
     (1, 0), (1, 1), (0, 1), (1, -1)
@@ -26,16 +28,21 @@ for y, line in enumerate(lines):
         gear_coord = (-1, -1)
         
         while number_x < len(line) and line[number_x].isdigit():
-            for (check_y, check_x) in checks:
-                try:
-                    char = lines[y + check_y][number_x + check_x]
-                    
-                    if not char.isdigit() and char == "*":
-                        is_valid_number = True
-                        gear_coord = (y + check_y, number_x + check_x)
-                        break
-                except:
+            for (dy, dx) in checks:
+                ny, nx = y + dy, number_x + dx
+                
+                if ny < 0 or ny >= height:
                     continue
+                
+                if nx < 0 or nx >= width:
+                    continue
+                
+                char = lines[ny][nx]
+                    
+                if not char.isdigit() and char == "*":
+                    is_valid_number = True
+                    gear_coord = (ny, nx)
+                    break
 
             size += 1
             number_x += 1

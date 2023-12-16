@@ -60,4 +60,4 @@ for ni in range(len(A)):
     
     counts.append(count)
                             
-print(counts, lcm(*counts))
+print(lcm(*counts))
