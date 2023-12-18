@@ -13,9 +13,6 @@ _sum = 0
 for line in lines:
     line = list(filter(lambda x: x.isdigit(), line))
     
-    if len(line) == 0:
-        continue
-    
-    _sum += int("".join((line[0], line[-1])))
+    _sum += int(line[0] + line[-1])
 
 print(_sum)

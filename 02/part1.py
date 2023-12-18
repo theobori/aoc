@@ -14,10 +14,10 @@ with open(0) as f:
         )
     )
 
-valid_games = []
+valid_games = 0
 
 for line in lines:
-    (game_id, game) = line.split(":")
+    game_id, game = line.split(":")
 
     game_id = int(game_id[5:])
     
@@ -36,9 +36,8 @@ for line in lines:
             if amount > MAX_CUBES[color]:
                 is_valid = False
                 break
-        
-        
-    if is_valid == True:
-        valid_games.append(game_id)
 
-print(sum(valid_games))
+    if is_valid == True:
+        valid_games += game_id
+
+print(valid_games)
