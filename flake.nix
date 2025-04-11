@@ -32,6 +32,11 @@
               ++ (with pkgs.python3Packages; [
                 pip
                 venvShellHook
+                numpy
+                # GNU Emacs Python LSP installed within the virtual environment
+                # otherwise my LSP installed outside could not reach the venv packages.
+                # See https://github.com/emacs-lsp/lsp-mode/issues/393
+                python-lsp-server
               ]);
           };
         };
