@@ -17,9 +17,9 @@ for y in range(h):
         if maze[y][x] == "S":
             initial_position = y, x
             break
-        else:
-            continue
-        break
+    else:
+        continue
+    break
 
 
 def best_sits(maze, initial_position, initial_delta):
