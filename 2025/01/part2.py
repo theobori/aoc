@@ -6,7 +6,7 @@ with os.fdopen(0) as f:
     lines = [(x[0], int(x[1:])) for x in f.read().splitlines() if len(x) > 0]
 
 dial = 50
-next_dial = ans = 0
+ans = 0
 
 for direction, distance in lines:
     if direction == "L":
