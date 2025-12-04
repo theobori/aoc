@@ -4,7 +4,7 @@
 
 [![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 
-This repository contains some [Advent of Code](https://adventofcode.com) challenges I have done for fun. Most of them were written for the [PyPy](https://pypy.org/) runtime.
+This repository contains some [Advent of Code](https://adventofcode.com) challenges in pure Python. Most of them were written for the [PyPy](https://pypy.org/) runtime.
 
 The following command line template can be used to launch AoC solutions via Nix via dedicated derivations.
 
