@@ -3,22 +3,17 @@
   lib,
   stdenvNoCC,
   python3,
-  writeShellScriptBin,
+  writeShellApplication,
+
+  supportedPythonRuntimesNames ? [
+    "pypy"
+    "python3"
+  ],
 }:
 let
-  years = {
-    "2023" = 25;
-    "2024" = 25;
-    "2025" = 12;
-  };
-
-  parts = {
-    "1" = 1;
-    "2" = 2;
-  };
-
-  inherit (lib.lists) range;
-  inherit (lib) listToAttrs pathExists;
+  supportedPythonRuntimes = builtins.map (
+    runtimeName: pkgs.${runtimeName}
+  ) supportedPythonRuntimesNames;
 in
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "x";
@@ -38,42 +33,69 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     cp ${./x.py} "$out/share/x/x.py"
 
     makeWrapper ${python3.interpreter} "$out/bin/x" \
-      --add-flags "$out/share/x/x.py"
+      --add-flags "$out/share/x/x.py" \
+      --prefix PATH : ${lib.makeBinPath supportedPythonRuntimes}
 
     runHook postInstall
   '';
 
-  passthru = builtins.mapAttrs (
-    year: problemsAmount:
+  passthru =
     let
-      problems' = range 1 problemsAmount;
-      problems = listToAttrs (
-        builtins.map (problem: {
-          "name" = builtins.toString problem;
-          "value" = problem;
-        }) problems'
-      );
+      years = {
+        "2023" = 25;
+        "2024" = 25;
+        "2025" = 12;
+      };
+
+      parts = {
+        "1" = 1;
+        "2" = 2;
+      };
+
+      inherit (lib.lists) range;
+      inherit (lib) listToAttrs pathExists;
     in
     builtins.mapAttrs (
-      problemName: problemValue:
+      year: problemsAmount:
+      let
+        problems' = range 1 problemsAmount;
+        problems = listToAttrs (
+          builtins.map (problem: {
+            name = builtins.toString problem;
+            value = problem;
+          }) problems'
+        );
+      in
       builtins.mapAttrs (
-        part: _:
-        let
-          problem = if problemValue < 10 then "0" + problemName else problemName;
-          scriptNameSuffix = "${year}-${problem}-${part}";
-          path = ./${year}/${problem}/part${part}.py;
-        in
-        rec {
-          dynamic = writeShellScriptBin "dynamic-${scriptNameSuffix}" "${finalAttrs.finalPackage}/bin/x ${year} ${problem} ${part} $@";
-          static =
-            if pathExists path then
-              (writeShellScriptBin "static-${scriptNameSuffix}" "${path} $@")
-            else
-              dynamic;
-        }
-      ) parts
-    ) problems
-  ) years;
+        problemName: problemValue:
+        builtins.mapAttrs (
+          part: _:
+          let
+            problem = if problemValue < 10 then "0" + problemName else problemName;
+            scriptNameSuffix = "${year}-${problem}-${part}";
+          in
+          rec {
+            dynamic = writeShellApplication {
+              name = "dynamic-${scriptNameSuffix}";
+              text = ''${finalAttrs.finalPackage}/bin/x ${year} ${problem} ${part} "$@"'';
+            };
+
+            static =
+              let
+                solutionPath = ./${year}/${problem}/part${part}.py;
+              in
+              if pathExists solutionPath then
+                writeShellApplication {
+                  name = "static-${scriptNameSuffix}";
+                  text = ''${solutionPath} "$@"'';
+                  runtimeInputs = supportedPythonRuntimes;
+                }
+              else
+                dynamic;
+          }
+        ) parts
+      ) problems
+    ) years;
 
   meta = {
     mainProgram = "x";
