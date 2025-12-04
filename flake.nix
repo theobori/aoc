@@ -18,8 +18,14 @@
         pkgs = nixpkgs.legacyPackages.${system};
 
         treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
+        aoc-solutions = pkgs.callPackage ./default.nix { };
       in
       {
+        packages = {
+          default = aoc-solutions;
+          inherit aoc-solutions;
+        };
+
         devShells = {
           default = pkgs.mkShell {
             venvDir = ".venv";

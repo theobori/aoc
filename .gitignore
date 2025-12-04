@@ -163,3 +163,4 @@ cython_debug/
 .direnv
 example.txt
 idea.org
+result
