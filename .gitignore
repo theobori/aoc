@@ -161,6 +161,5 @@ cython_debug/
 
 .vscode
 .direnv
-example.txt
 idea.org
 result
