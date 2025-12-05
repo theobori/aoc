@@ -14,7 +14,7 @@ import subprocess
 
 from subprocess import CompletedProcess, CalledProcessError
 from pathlib import Path
-from sys import argv, exit, stderr
+from sys import argv, exit
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -31,7 +31,11 @@ try:
     problem_id = int(argv[2])
     part_id = int(argv[3])
 
-    assert 0 <= problem_id <= 25
+    if year >= 2025:
+        assert 0 <= problem_id <= 12
+    else:
+        assert 0 <= problem_id <= 25
+
     assert part_id == 1 or part_id == 2
 except Exception as e:
     logger.error("An error occured with the CLI arguments.", exc_info=True)
@@ -58,7 +62,7 @@ try:
         capture_output=True,
     )
 except CalledProcessError as e:
-    print(e.stderr.decode(), file=stderr, end="")
+    logger.error(e.stderr.decode())
     exit(1)
 except Exception:
     exit(1)
