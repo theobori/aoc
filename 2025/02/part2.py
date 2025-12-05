@@ -10,6 +10,9 @@ def is_invalid(_id_str, n):
     half_n = n // 2
 
     for group_len in range(half_n, 0, -1):
+        if n % group_len != 0:
+            continue
+
         group_ref = _id_str[:group_len]
 
         for i in range(group_len, n, group_len):
