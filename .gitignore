@@ -163,3 +163,5 @@ cython_debug/
 .direnv
 idea.org
 result
+
+input.txt
