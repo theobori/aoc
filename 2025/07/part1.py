@@ -9,12 +9,7 @@ with os.fdopen(0) as f:
 
 n, m = len(grid), len(grid[0])
 
-st = deque()
-
-for x in range(m):
-    if grid[0][x] == "S":
-        st.append((0, x))
-        break
+st = deque([(0, grid[0].index("S"))])
 
 ans = 0
 while st:

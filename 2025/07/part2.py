@@ -6,12 +6,7 @@ with os.fdopen(0) as f:
     grid = [list(line) for line in f.read().splitlines() if len(line) > 0]
 
 n, m = len(grid), len(grid[0])
-
-sx = None
-for x in range(m):
-    if grid[0][x] == "S":
-        sx = x
-        break
+sx = grid[0].index("S")
 
 grid[-1] = [1] * m
 
