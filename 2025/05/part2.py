@@ -25,12 +25,12 @@ for _ in range(n):
         if other_start <= start <= other_end and end >= other_end:
             ranges[i][1] = end
             break
-        elif other_start <= end <= other_end and start <= other_start:
+        if other_start <= end <= other_end and start <= other_start:
             ranges[i][0] = start
             break
-        elif other_start <= start <= end <= other_end:
+        if other_start <= start <= end <= other_end:
             break
-        elif start <= other_start and end >= other_end:
+        if start <= other_start and end >= other_end:
             ranges[i][0] = start
             ranges[i][1] = end
             break
