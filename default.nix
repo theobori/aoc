@@ -4,20 +4,14 @@
   stdenvNoCC,
   python3,
   writeShellApplication,
-
-  supportedPythonRuntimesNames ? [
-    "pypy"
-    "python3"
-  ],
 }:
 let
-  supportedPythonRuntimes = builtins.map (
-    runtimeName: pkgs.${runtimeName}
-  ) supportedPythonRuntimesNames;
-
-  pythonDependencies = with pkgs.python3Packages; [
-    numpy
-    shapely
+  supportedPythonRuntimes = with pkgs; [
+    pypy
+    (python3.withPackages (p: [
+      p.numpy
+      p.shapely
+    ]))
   ];
 in
 stdenvNoCC.mkDerivation (finalAttrs: {
@@ -29,8 +23,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   nativeBuildInputs = with pkgs; [
     makeWrapper
   ];
-
-  buildInputs = pythonDependencies;
 
   installPhase = ''
     runHook preInstall
@@ -95,7 +87,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
                 writeShellApplication {
                   name = "static-${scriptNameSuffix}";
                   text = ''${solutionPath} "$@"'';
-                  runtimeInputs = supportedPythonRuntimes ++ pythonDependencies;
+                  runtimeInputs = supportedPythonRuntimes;
                 }
               else
                 dynamic;
