@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "x"
+version = "0.0.1"
+dependencies = [
+  "numpy",
+  "shapely",
+  "loguru",
+  "pydantic",
+]
+requires-python = ">=3.13.9"
+authors = [
+  {name = "Théo Bori", email = "theobori@disroot.org"}
+]
+maintainers = [
+  {name = "Théo Bori", email = "theobori@disroot.org"}
+]
+description = "My Advent Of Code toolkit."
+readme = "README.md"
+license = "MIT"
+keywords = ["advent-of-code", "aoc", "cli"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python"
+]
+
+[project.scripts]
+x = "x.x:main"
+
+[project.urls]
+Homepage = "https://github.com/theobori/advent-of-code"
+Documentation = "https://github.com/theobori/advent-of-code"
+Repository = "https://github.com/theobori/advent-of-code"
+
+[tool.setuptools]
+packages = ["x"]

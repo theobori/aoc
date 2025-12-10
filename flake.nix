@@ -18,7 +18,16 @@
         pkgs = nixpkgs.legacyPackages.${system};
 
         treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
-        aoc-solutions = pkgs.callPackage ./default.nix { };
+        aoc-solutions = pkgs.callPackage ./default.nix {
+          inherit (pkgs.python3Packages)
+            buildPythonApplication
+            setuptools
+            numpy
+            shapely
+            loguru
+            pydantic
+            ;
+        };
       in
       {
         packages = {
@@ -32,19 +41,20 @@
             packages =
               with pkgs;
               [
-                python3
+                # Keep in this order
                 pypy
+                python3
               ]
               ++ (with pkgs.python3Packages; [
                 pip
                 venvShellHook
-                numpy
-                shapely
+                setuptools
                 # GNU Emacs Python LSP installed within the virtual environment
                 # otherwise my LSP installed outside could not reach the venv packages.
                 # See https://github.com/emacs-lsp/lsp-mode/issues/393
                 python-lsp-server
-              ]);
+              ])
+              ++ aoc-solutions.dependencies;
           };
         };
 

@@ -1,11 +1,21 @@
 {
   pkgs,
   lib,
-  stdenvNoCC,
   python3,
   writeShellApplication,
+  buildPythonApplication,
+
+  # Python build time
+  setuptools,
+
+  # Python run time
+  numpy,
+  shapely,
+  loguru,
+  pydantic,
 }:
 let
+  # For static derivations only
   supportedPythonRuntimes = with pkgs; [
     pypy
     (python3.withPackages (p: [
@@ -13,90 +23,87 @@ let
       p.shapely
     ]))
   ];
-in
-stdenvNoCC.mkDerivation (finalAttrs: {
-  pname = "x";
-  version = "0.0.1";
+  self = buildPythonApplication {
+    pname = "x";
+    version = "0.0.1";
+    pyproject = true;
 
-  dontUnpack = true;
+    src = ./.;
 
-  nativeBuildInputs = with pkgs; [
-    makeWrapper
-  ];
+    build-system = [
+      setuptools
+    ];
 
-  installPhase = ''
-    runHook preInstall
+    dependencies = [
+      numpy
+      shapely
+      loguru
+      pydantic
+    ];
 
-    mkdir -p $out/{bin,share/x}
+    pythonImportsCheck = [ "x" ];
 
-    cp ${./x.py} "$out/share/x/x.py"
-
-    makeWrapper ${python3.interpreter} "$out/bin/x" \
-      --add-flags "$out/share/x/x.py" \
-      --prefix PATH : ${lib.makeBinPath supportedPythonRuntimes}
-
-    runHook postInstall
-  '';
-
-  passthru =
-    let
-      years = {
-        "2023" = 25;
-        "2024" = 25;
-        "2025" = 12;
-      };
-
-      parts = {
-        "1" = 1;
-        "2" = 2;
-      };
-
-      inherit (lib.lists) range;
-      inherit (lib) listToAttrs pathExists;
-    in
-    builtins.mapAttrs (
-      year: problemsAmount:
+    passthru =
       let
-        problems' = range 1 problemsAmount;
-        problems = listToAttrs (
-          builtins.map (problem: {
-            name = builtins.toString problem;
-            value = problem;
-          }) problems'
-        );
+        years = {
+          "2023" = 25;
+          "2024" = 25;
+          "2025" = 12;
+        };
+
+        parts = {
+          "1" = 1;
+          "2" = 2;
+        };
+
+        inherit (lib.lists) range;
+        inherit (lib) listToAttrs pathExists;
       in
       builtins.mapAttrs (
-        problemName: problemValue:
+        year: problemsAmount:
+        let
+          problems' = range 1 problemsAmount;
+          problems = listToAttrs (
+            builtins.map (problem: {
+              name = builtins.toString problem;
+              value = problem;
+            }) problems'
+          );
+        in
         builtins.mapAttrs (
-          part: _:
-          let
-            problem = if problemValue < 10 then "0" + problemName else problemName;
-            scriptNameSuffix = "${year}-${problem}-${part}";
-          in
-          rec {
-            dynamic = writeShellApplication {
-              name = "dynamic-${scriptNameSuffix}";
-              text = ''${finalAttrs.finalPackage}/bin/x ${year} ${problem} ${part} "$@"'';
-            };
+          problemName: problemValue:
+          builtins.mapAttrs (
+            part: _:
+            let
+              problem = if problemValue < 10 then "0" + problemName else problemName;
+              scriptNameSuffix = "${year}-${problem}-${part}";
+            in
+            rec {
+              dynamic = writeShellApplication {
+                name = "dynamic-${scriptNameSuffix}";
+                text = ''${self}/bin/x run ${year} ${problem} ${part} "$@"'';
+              };
 
-            static =
-              let
-                solutionPath = ./${year}/${problem}/part${part}.py;
-              in
-              if pathExists solutionPath then
-                writeShellApplication {
-                  name = "static-${scriptNameSuffix}";
-                  text = ''${solutionPath} "$@"'';
-                  runtimeInputs = supportedPythonRuntimes;
-                }
-              else
-                dynamic;
-          }
-        ) parts
-      ) problems
-    ) years;
+              static =
+                let
+                  solutionPath = ./${year}/${problem}/part${part}.py;
+                in
+                if pathExists solutionPath then
+                  writeShellApplication {
+                    name = "static-${scriptNameSuffix}";
+                    text = ''${solutionPath} "$@"'';
+                    runtimeInputs = supportedPythonRuntimes;
+                  }
+                else
+                  dynamic;
+            }
+          ) parts
+        ) problems
+      ) years;
 
-  meta = {
-    mainProgram = "x";
+    meta = {
+      mainProgram = "x";
+    };
   };
-})
+in
+self
