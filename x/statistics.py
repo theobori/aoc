@@ -133,7 +133,7 @@ def _statistics_write_as_markdown(
 
         readme = (
             STATISTICS_MARKDONW_TEMPLATE.replace("{{year}}", year_str)
-            .replace("{{completion_percent}}", f"{completion_percent:02}")
+            .replace("{{completion_percent}}", f"{completion_percent:.2f}")
             .replace("{{table}}", markdown_table)
             .replace("{{parts_completed}}", str(parts_completed))
             .replace("{{parts_amount}}", str(parts_amount))

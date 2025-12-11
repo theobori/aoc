@@ -1,6 +1,6 @@
 # My Advent Of Code statistics for 2023
 
-I completed it **62.0% (31/50)**, here's a table showing my problem-solving statistics for the year 2023.
+I completed it **62.00% (31/50)**, here's a table showing my problem-solving statistics for the year 2023.
 
 | Day | First part | Second part |
 | - | - | - |

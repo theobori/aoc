@@ -1,6 +1,6 @@
 # My Advent Of Code statistics for 2024
 
-I completed it **100.0% (50/50)**, here's a table showing my problem-solving statistics for the year 2024.
+I completed it **100.00% (50/50)**, here's a table showing my problem-solving statistics for the year 2024.
 
 | Day | First part | Second part |
 | - | - | - |
