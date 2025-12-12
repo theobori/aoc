@@ -1,6 +1,6 @@
 # My Advent Of Code statistics for 2025
 
-I completed it **83.33% (20/24)**, here's a table showing my problem-solving statistics for the year 2025.
+I completed it **91.67% (22/24)**, here's a table showing my problem-solving statistics for the year 2025.
 
 | Day | First part | Second part |
 | - | - | - |
@@ -15,4 +15,4 @@ I completed it **83.33% (20/24)**, here's a table showing my problem-solving sta
 | **9** | Yes | Yes |
 | **10** | No | No |
 | **11** | Yes | Yes |
-| **12** | No | No |
+| **12** | Yes | Yes |
